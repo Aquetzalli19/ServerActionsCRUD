@@ -1,0 +1,22 @@
+# Dockerfile.dev
+FROM oven/bun:latest
+
+WORKDIR /app
+
+# Copia los archivos de dependencias primero para aprovechar la caché
+COPY package.json bun.lockb ./
+
+# Instala las dependencias con Bun
+RUN bun install
+
+# Copia el resto del código fuente
+COPY . .
+
+# Genera el cliente de Prisma
+RUN bunx prisma generate
+
+# Expon el puerto que Next.js usará
+EXPOSE 3000
+
+# Comando para ejecutar la aplicación en modo desarrollo
+CMD ["bun", "run", "dev"]
